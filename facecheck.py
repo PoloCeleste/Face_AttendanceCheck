@@ -47,16 +47,20 @@ def makeDataset():
     cam = cv.VideoCapture(0)
     cam.set(3, 1920)
     cam.set(4, 1080)
-    f = open("Regist.txt", "r")
+    
     names = []
-    while True:
-        line = f.readline().strip()
-        if not line: break
-        names.append(line)
-    f.close()
+    if os.path.exists("Regist.txt"):
+        f = open("Regist.txt", "r")
+        while True:
+            line = f.readline().strip()
+            if not line: break
+            names.append(line)
+        f.close()
     face_id = len(names)
     print("\n Look the camera and wait")
     count = 0
+    if not os.path.exists("dataset"):os.mkdir("dataset")
+    if not os.path.exists("training"):os.mkdir("training")
     while(True):
         ret, img = cam.read()
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -105,8 +109,6 @@ def trainingData():
 def faceRecog():
     recognizer.read('training/trainer.yml')
     id = 0
-    chancount=0
-    jincount=0
     f = open("Regist.txt", "r")
     names = []
     while True:
@@ -114,9 +116,9 @@ def faceRecog():
         if not line: break
         names.append(line)
     f.close()
-    counts=[]
-    for x in range(len(names)):
-        counts.append(x,0)
+    print(names)
+    
+    counts=[0]*len(names)
 
     cam = cv.VideoCapture(0)
     cam.set(3, 1920)
@@ -144,27 +146,13 @@ def faceRecog():
                 confidence = int(round(100 - minScore))
                 for i in range(len(names)):
                     if (id == names[i]):
-                        if (confidence  > 50):
+                        if (confidence  > 60):
                             if (counts[i] < 1):
                                 chtime = datetime.now().strftime('%H:%M:%S')
                                 top(str(id))
-                                counts.append(i, 1)
+                                counts[i]+=1
                                 print(f'{str(id)} Check-In ({chtime})')
                                 break
-                if (id == names[1]):
-                    if (confidence  > 50):
-                        if (chancount < 1):
-                            chtime = datetime.now().strftime('%H:%M:%S')
-                            top(str(id))
-                            chancount += 1
-                            print(f'{str(id)} Check-In ({chtime})')
-                            break
-                if (id == names[2]):
-                    if (confidence  > 50):
-                        if (jincount < 1):
-                            top(str(id))
-                            jincount += 1
-                            break
             else:
                 id = "unknown"
                 confidence = "  {0}%".format(round(100 - confidence))

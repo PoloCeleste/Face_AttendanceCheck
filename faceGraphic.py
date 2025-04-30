@@ -32,12 +32,23 @@ class MyApp(QMainWindow, QDialog, QWidget):
 
         lbl = QLabel("안면인식 출석체크 시스템", self)
         lbl.setFont(QFont("D2Coding", 50, QFont.Bold))
-        lbl.setGeometry(530, 150, 820, 80)
+        lbl.setAlignment(Qt.AlignCenter)
+        lbl_metrics = lbl.fontMetrics()
+        lbl_width = lbl_metrics.width(lbl.text())
+        lbl_height = lbl_metrics.height()
+        # lbl.setFixedWidth(lbl_width+10)
+        # lbl.setFixedHeight(lbl_height+10)
+        # lbl.setAlignment(Qt.AlignVCenter)
+        lbl.setGeometry((1880-lbl_width)//2, 150, lbl_width+10, lbl_height+10)
 
         Ylbl = QLabel(self)
         Ylbl.setFont(fnt)
         Ylbl.setText(self.date.toString(Qt.DefaultLocaleShortDate))
-        Ylbl.setGeometry(830, 320, 220, 60)
+        Ylbl.setAlignment(Qt.AlignCenter)
+        Ylbl_metrics = Ylbl.fontMetrics()
+        Ylbl_width = Ylbl_metrics.width(Ylbl.text())
+        Ylbl_height = Ylbl_metrics.height()
+        Ylbl.setGeometry((1880-Ylbl_width)//2, 320, Ylbl_width+10, Ylbl_height+10)
 
         self.lcd = QLCDNumber(self)
         self.lcd.display('')
@@ -51,18 +62,18 @@ class MyApp(QMainWindow, QDialog, QWidget):
         self.loglbl.setGeometry(530, 920, 820, 160)
         
         self.sbtn = QPushButton('Start', self)
-        self.sbtn.setGeometry(870, 600, 140, 55)
+        self.sbtn.setGeometry(830, 600, 220, 75)
         self.sbtn.setFont(fnt)
         self.sbtn.setDefault(True)
         self.sbtn.clicked.connect(facecheck.faceRecog)
         
         self.sbtn = QPushButton('Regist', self)
-        self.sbtn.setGeometry(870, 700, 140, 55)
+        self.sbtn.setGeometry(830, 720, 220, 75)
         self.sbtn.setFont(fnt)
         self.sbtn.clicked.connect(self.faceRegist)
         
         qbtn = QPushButton('Quit', self)
-        qbtn.setGeometry(870, 800, 140, 55)
+        qbtn.setGeometry(830, 840, 220, 75)
         qbtn.setFont(fnt)
         qbtn.clicked.connect(self.closeMessage)
 
@@ -78,7 +89,7 @@ class MyApp(QMainWindow, QDialog, QWidget):
         self.statusBar.showMessage(self.date.toString(Qt.DefaultLocaleLongDate))
         self.resize(1920, 1080)
         self.center()
-        self.showFullScreen()
+        self.showNormal()
 
     def timeout(self):
         sender = self.sender()
@@ -108,6 +119,6 @@ class MyApp(QMainWindow, QDialog, QWidget):
             sys.exit()
             
 if __name__ == '__main__':
-   app = QApplication(sys.argv)
-   ex = MyApp()
-   sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    ex = MyApp()
+    sys.exit(app.exec_())
